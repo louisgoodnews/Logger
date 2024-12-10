@@ -37,7 +37,7 @@ class Logger(BaseModel):
         """
         logger: "Logger" = Logger(level=level, name=name,)
 
-        logger.info(message="Initialised Logger.")
+        logger.info(message="Initialised Logger...")
         
         return logger
     
