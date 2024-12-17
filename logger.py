@@ -37,7 +37,7 @@ class Logger(BaseModel):
         """
         logger: "Logger" = Logger(level=level, name=name,)
 
-        logger.info(message="Initialised Logger...")
+        logger.info(message=f"Initialised Logger '{logger.name}'...")
         
         return logger
     
@@ -105,15 +105,55 @@ class Logger(BaseModel):
         Returns:
             Any: The result of the decorated function
         """
-        self.log(f"Executing: {function.__name__}", level=Level.INFO,)
+
+    def function(
+        self,
+        function: Callable[..., Any],
+        *args,
+        **kwargs,
+    ) -> Any:
+        """
+        Decorator to log the execution of a function.
+
+        Args:
+            function (Callable[..., Any]): The function to be decorated
+            *args: Positional arguments passed to the function
+            **kwargs: Keyword arguments passed to the function
+
+        Returns:
+            Any: The result of the decorated function
+        
+        Raises:
+            Exception: If an exception occurs during function execution
+        """
+        result: Any | None = None
+
+        self.log(
+            f"Executing: {function.__name__}",
+            level=Level.INFO,
+        )
 
         start: datetime = datetime.now()
-        result = function(*args, **kwargs)
+
+        try:
+            result = function(*args, **kwargs)
+
+            self.log(
+                f"Completed: {function.__name__}",
+                level=Level.INFO,
+            )
+        except Exception as e:
+            self.error(
+                message=f"Caught an exception while attempting to execute function '{function.__name__}': {e}"
+            )
 
         end: datetime = datetime.now()
-        self.log(f"Completed: {function.__name__}", level=Level.INFO,)
 
-        self.log(f"Duration: {(end - start).total_seconds()}s", level=Level.INFO,)
+        self.log(
+            f"Duration: {(end - start).total_seconds()}s",
+            level=Level.INFO,
+        )
+
         return result
 
     def info(self, message: str, **kwargs,) -> None:
