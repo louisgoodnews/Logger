@@ -28,18 +28,18 @@ pip install pydantic
 Here's a simple example of how to use the logger:
 
 ```python
-from logger import Logger
-from level import Level
+from src.logger import Logger
+from src.logger.level import Level
 
 # Create a logger instance
 logger = Logger.get_logger(name="MyApp", level=Level.INFO)
 
 # Log messages at different levels
-logger.debug("Debug message")    # Gray text
-logger.info("Info message")      # Blue text
-logger.warning("Warning!")       # Yellow text
-logger.error("Error occurred")   # Red text
-logger.critical("Critical!")     # Red text
+logger.debug("Debug message")  # Gray text
+logger.info("Info message")  # Blue text
+logger.warning("Warning!")  # Yellow text
+logger.error("Error occurred")  # Red text
+logger.critical("Critical!")  # Red text
 ```
 
 ### Logging Levels

@@ -35,7 +35,11 @@ class Logger(BaseModel):
         Returns:
             Logger: A new Logger instance with the specified name and level
         """
-        return Logger(level=level, name=name,)
+        logger: "Logger" = Logger(level=level, name=name,)
+
+        logger.info(message=f"Initialized Logger '{logger.name}'...")
+
+        return logger
     
     def _colourise_(self, level: Level, message: str,) -> str:
         """

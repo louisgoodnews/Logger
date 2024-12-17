@@ -9,8 +9,8 @@ the Logger class effectively in your applications. It shows:
 - Colored output in the console
 """
 
-from logger import Logger
-from level import Level
+from src.logger import Logger
+from src.logger.level import Level
 
 def demonstrate_logging() -> None:
     """
