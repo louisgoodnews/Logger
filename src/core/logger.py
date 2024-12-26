@@ -126,13 +126,14 @@ class Logger:
         Returns:
             str: The colorized message with ANSI escape codes
         """
-        colourisation: Dict[str, Any] = {
+        colourisation: Dict[str, str] = {
             "RESET": "\x1b[0m",
             "DEBUG": "\x1b[90m",  # Gray
             "INFO": "\x1b[94m",  # Blue
             "WARNING": "\x1b[93m",  # Yellow
             "ERROR": "\x1b[91m",  # Red
             "CRITICAL": "\x1b[91m",  # Red
+            "SILENT": "\x1b[0m",  # Gray
         }
 
         return f"{colourisation[level.value]}{message}{colourisation['RESET']}"
@@ -262,6 +263,24 @@ class Logger:
         """
         print(
             f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [{self.name}] {self._colourise_(level, message)}",
+            **kwargs,
+        )
+
+    def silent(
+        self,
+        message: str,
+        **kwargs,
+    ) -> None:
+        """
+        Log a silent message.
+
+        Args:
+            message (str): The silent message to log
+            **kwargs: Additional keyword arguments passed to log()
+        """
+        self.log(
+            level=Level.SILENT,
+            message=message,
             **kwargs,
         )
 
