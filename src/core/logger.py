@@ -31,6 +31,24 @@ class Logger:
         self._level: Level = level
         self._name: str = name
 
+    def __repr__(self) -> str:
+        """
+        Returns a string representation of the Logger instance.
+
+        Returns:
+            str: A string representation of the Logger instance.
+        """
+        return self.__str__()
+
+    def __str__(self) -> str:
+        """
+        Returns a string representation of the Logger instance.
+
+        Returns:
+            str: A string representation of the Logger instance.
+        """
+        return f"<{self.__class__.__name__}({', '.join(f'{key}={value}' for (key, value,) in self.__dict__.items())})>"
+
     @property
     def level(self) -> Level:
         """
