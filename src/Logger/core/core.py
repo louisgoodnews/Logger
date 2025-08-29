@@ -3,6 +3,8 @@ Author: Louis Goodnews
 Date: 2025-07-08
 """
 
+import traceback
+
 from datetime import datetime
 
 from enum import Enum
@@ -470,9 +472,7 @@ class Logger:
             start: datetime = datetime.now()
 
             # Log the start of the function execution
-            self.info(
-                message=f"Executing {function.__name__} with args: {args}, kwargs: {kwargs}"
-            )
+            self.info(message=f"Executing {function.__name__} with args: {args}, kwargs: {kwargs}")
 
             # Execute the function with the provided arguments
             result: Optional[Any] = function(*args, **kwargs)
@@ -496,3 +496,31 @@ class Logger:
 
             # Return None if an error occurs
             return None
+
+    def exception(
+        self,
+        exception: Exception,
+        message: Any,
+    ) -> None:
+        """
+        Log an exception.
+
+        :param message: The exception message to log.
+        :type message: Any
+        :param exception: The exception to log.
+        :type exception: Exception
+
+        :return: None
+        :rtype: None
+        """
+
+        # Add the traceback to the message
+        message += f"\n Traceback for {exception.__class__.__name__}:\n\n{traceback.format_exc()}"
+
+        # Log the exception
+        self.log(
+            level=Level.ERROR,
+            message=message,
+            *args,
+            **kwargs,
+        )
