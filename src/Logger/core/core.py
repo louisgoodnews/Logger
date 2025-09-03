@@ -3,6 +3,8 @@ Author: Louis Goodnews
 Date: 2025-07-08
 """
 
+import traceback
+
 from datetime import datetime
 
 from enum import Enum
@@ -115,6 +117,7 @@ class Logger:
         :rtype: None
         """
 
+        # Initialize the colorization settings
         self._colorization: Final[dict[str, Any]] = {}
 
         # Set the logging level
@@ -154,6 +157,7 @@ class Logger:
         :rtype: None
         """
 
+        # Update the colorization settings
         self.colorization.update(kwargs)
 
     @property
@@ -204,6 +208,45 @@ class Logger:
             name=name,
         )
 
+    def __contains__(
+        self,
+        item: Any,
+    ) -> bool:
+        """
+        Check if the Logger instance contains a specific item.
+
+        :param item: The item to check for.
+        :type item: Any
+
+        :return: True if the Logger instance contains the item, False otherwise.
+        :rtype: bool
+        """
+
+        # Check if the item is in the Logger instance
+        return item in self.__dict__
+
+    def __eq__(
+        self,
+        other: "Logger",
+    ) -> bool:
+        """
+        Check if the Logger instance is equal to another object.
+
+        :param other: The object to compare with.
+        :type other: object
+
+        :return: True if the Logger instance is equal to the other object, False otherwise.
+        :rtype: bool
+        """
+
+        # Check if the other object is an instance of Logger
+        if not isinstance(other, Logger):
+            # If the other object is not an instance of Logger, return False
+            return False
+
+        # Return True if the Logger instances are equal
+        return self.name == other.name and self.level == other.level
+
     def __getitem__(
         self,
         key: str,
@@ -248,20 +291,20 @@ class Logger:
 
     def log(
         self,
-        level: Level,
         message: Any,
         override: bool = False,
+        level: Level = Level.SILENT,
         *args: Any,
         **kwargs: Any,
     ) -> None:
         """
         Log a message with the specified logging level.
 
-        :param level: The logging level for the message.
+        :param level: The logging level for the message. Defaults to Level.SILENT.
         :type level: Level
         :param message: The message to log.
         :type message: Any
-        :param override: If True, the message will be logged regardless of the logger's level.
+        :param override: If True, the message will be logged regardless of the logger's level. Defaults to False.
         :type override: bool
         :param args: Additional positional arguments to format the message.
         :param kwargs: Additional keyword arguments to format the message.
@@ -470,9 +513,7 @@ class Logger:
             start: datetime = datetime.now()
 
             # Log the start of the function execution
-            self.info(
-                message=f"Executing {function.__name__} with args: {args}, kwargs: {kwargs}"
-            )
+            self.info(message=f"Executing {function.__name__} with args: {args}, kwargs: {kwargs}")
 
             # Execute the function with the provided arguments
             result: Optional[Any] = function(*args, **kwargs)
@@ -496,3 +537,38 @@ class Logger:
 
             # Return None if an error occurs
             return None
+
+    def exception(
+        self,
+        exception: Exception,
+        message: Any,
+        log_traceback: bool = True,
+    ) -> None:
+        """
+        Log an exception.
+
+        :param message: The exception message to log.
+        :type message: Any
+        :param exception: The exception to log.
+        :type exception: Exception
+        :param log_traceback: Whether to log the traceback. Defaults to True.
+        :type log_traceback: bool
+
+        :return: None
+        :rtype: None
+        """
+
+        # Check if the traceback should be logged
+        if log_traceback:
+            # Add the traceback to the message
+            message += (
+                f"\n Traceback for {exception.__class__.__name__}:\n\n{traceback.format_exc()}"
+            )
+
+        # Log the exception
+        self.log(
+            level=Level.ERROR,
+            message=message,
+            *args,
+            **kwargs,
+        )
