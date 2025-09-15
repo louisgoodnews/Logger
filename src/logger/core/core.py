@@ -543,6 +543,8 @@ class Logger:
         exception: Exception,
         message: Any,
         log_traceback: bool = True,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         Log an exception.
